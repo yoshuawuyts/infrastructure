@@ -21,10 +21,10 @@ Playing around with Kubernetes
 $ ./create-cluster
 
 # build container from scratch
-$ ./build-container
+$ ./build-container <gcloud_project_name>
 
 # send container off to kube cluster & expose to public
-$ ./deploy-container
+$ ./deploy-container <gcloud_project_name>
 ```
 
 ## See Also
