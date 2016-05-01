@@ -1,0 +1,4 @@
+#!/bin/sh
+
+printf '[gcloud] creating cluster\n'
+gcloud container clusters create test-cluster -m f1-micro

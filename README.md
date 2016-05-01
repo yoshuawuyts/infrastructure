@@ -2,13 +2,14 @@
 Playing around with Kubernetes
 
 ## Todo
+- [x] create infra
 - [x] run hello world example
-- [ ] create hello world container
-- [ ] push container to registry
-- [ ] start container from registry
-- [ ] wrap container in `helm`
+- [x] create hello world container
+- [x] push container to registry
+- [x] start container from registry
 - [ ] aggregate logs in gcloud
 - [ ] add google stack tracing stuff to container
+- [ ] wrap container in `helm`
 - [ ] dynamically add config to container
 - [ ] add monitoring thresholds
 - [ ] SSL
@@ -31,6 +32,8 @@ $ ./deploy-container
 - http://kubernetes.io/docs/hellonode
 - http://kubernetes.io/docs/user-guide/ui/
 - http://kubernetes.io/docs/admin/high-availability/
+- https://github.com/TheNewNormal/kube-solo-osx
+- https://cloud.google.com/container-engine/docs/quickstart
 
 ## License
 [MIT](https://tldrlegal.com/license/mit-license)

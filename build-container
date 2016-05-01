@@ -1,4 +1,4 @@
 #!/bin/sh
 
 [ $# -ne 1 ] && { printf 'usage: build-container <project_name>\n'; exit 1; }
-sudo docker build -t gcr.io/"$1"/hello-node:v1 ./hellonode
+sudo docker build -t gcr.io/"$1"/hello-node:1.0.0 ./hellonode
