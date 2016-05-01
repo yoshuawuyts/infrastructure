@@ -7,6 +7,7 @@ Playing around with Kubernetes
 - [x] create hello world container
 - [x] push container to registry
 - [x] start container from registry
+- [x] move to busybox backed image
 - [ ] aggregate logs in gcloud
 - [ ] add google stack tracing stuff to container
 - [ ] wrap container in `helm`
