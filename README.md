@@ -9,6 +9,8 @@ Playing around with Kubernetes
 - [x] push container to registry
 - [x] start container from registry
 - [x] move to busybox backed image
+- [ ] wrap container in config
+- [x] run npm install on startup
 - [ ] add google stack tracing stuff to container
 - [ ] figure out how secrets work & load secret
 - [ ] wrap container in `helm`

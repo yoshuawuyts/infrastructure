@@ -22,8 +22,12 @@ kubectl run "$deployment_name" \
 printf '\n[kubectl] exposing container to outside world\n'
 kubectl expose deployment "$deployment_name" --type="LoadBalancer"
 
-printf '\n[kubectl] list info\n'
 sleep 10
+printf '\n[kubectl] list deployments\n'
 kubectl get deployments
+
+printf '\n[kubectl] list services\n'
 kubectl get svc
+
+printf '\n[kubectl] list pods\n'
 kubectl get po
