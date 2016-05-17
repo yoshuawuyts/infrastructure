@@ -13,9 +13,9 @@ Playing around with Kubernetes
 - [x] run npm install on startup
 - [ ] add google stack tracing stuff to container
 - [ ] figure out how secrets work & load secret
-- [ ] wrap container in `helm`
+- [ ] ~~wrap container in `helm`~~
 - [ ] dynamically add config to container
-- [ ] add monitoring thresholds
+- [ ] ~~add monitoring thresholds~~
 - [ ] aggregate logs in gcloud
 - [ ] SSL
 - [ ] get the whole shebang working locally
