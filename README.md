@@ -46,6 +46,7 @@ $ ./script/deploy-container <gcloud_project_name>
 - http://www.devoperandi.com/kubernetesterraform-multiple-availability-zone-deployments/
 - https://github.com/yoshuawuyts/playground-aws
 - https://cloud.google.com/sdk/gcloud/reference/container/clusters/get-credentials?hl=en_US
+- https://github.com/bitnami/charts
 
 ## License
 [MIT](https://tldrlegal.com/license/mit-license)
