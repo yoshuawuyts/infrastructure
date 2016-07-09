@@ -1,5 +1,5 @@
-# playground-kubernetes
-Playing around with Kubernetes
+# infra
+Infrastructure files
 
 ## Todo
 - [x] create infra
