@@ -5,6 +5,7 @@
 
 variable "gcloud_project" {
   description = "Name of the Google Cloud project"
+  default = "yosh-land"
 }
 
 variable "gcloud_credentials" {
@@ -24,16 +25,18 @@ variable "gcloud_region" {
 
 variable "cluster_name" {
   description = "Name of the cluster"
+  default = "cluster-eu-west"
 }
 
 variable "cluster_description" {
   description = "Description of the cluster"
+  default = "yosh.land cluster"
 }
 
 variable "gke_zone" {
   type = "string"
   description = "Availability zone"
-  default = "asia-east1-c"
+  default = "europe-west1-c"
 }
 
 variable "username" {

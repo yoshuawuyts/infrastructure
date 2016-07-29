@@ -35,6 +35,15 @@ $ ./script/build-container <gcloud_project_name>
 $ ./script/deploy-container <gcloud_project_name>
 ```
 
+## Config
+Create a terraform config file in
+[`infra/terraform.tfvars`](https://www.terraform.io/intro/getting-started/variables.html):
+```hcl
+cluster_description = "yosh.land cluster"
+cluster_name = "yosh-land"
+gcloud_project = "<gcloud project name>"
+```
+
 ## See Also
 - http://kubernetes.io/docs/getting-started-guides/
 - http://kubernetes.io/docs/hellonode

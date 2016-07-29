@@ -8,7 +8,7 @@ resource "google_container_cluster" "primary" {
   name = "${var.cluster_name}"
   description = "${var.cluster_description}"
   zone = "${var.gke_zone}"
-  initial_node_count = "3"
+  initial_node_count = "1"
 
   master_auth {
     username = "${var.username}"
@@ -17,7 +17,7 @@ resource "google_container_cluster" "primary" {
 
   node_config {
     machine_type = "f1-micro"
-    disk_size_gb = "100"
+    disk_size_gb = "10"
     oauth_scopes = [
       "https://www.googleapis.com/auth/compute",
       "https://www.googleapis.com/auth/devstorage.read_only",
