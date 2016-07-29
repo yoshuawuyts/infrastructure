@@ -1,25 +1,6 @@
 # infra
 Infrastructure files
 
-## Todo
-- [x] create infra
-- [x] automate infra creation using terraform
-- [x] run hello world example
-- [x] create hello world container
-- [x] push container to registry
-- [x] start container from registry
-- [x] move to busybox backed image
-- [ ] wrap container in config
-- [x] run npm install on startup
-- [ ] add google stack tracing stuff to container
-- [ ] figure out how secrets work & load secret
-- [ ] ~~wrap container in `helm`~~
-- [ ] dynamically add config to container
-- [ ] ~~add monitoring thresholds~~
-- [ ] aggregate logs in gcloud
-- [ ] SSL
-- [ ] get the whole shebang working locally
-
 ## Usage
 ```sh
 # setup google cloud cluster
