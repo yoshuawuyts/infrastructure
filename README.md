@@ -1,13 +1,32 @@
 # infra
 Infrastructure files
 
+## Installation
+```sh
+$ brew install terraform
+$ brew install gcloud
+$ gcloud components install kubectl
+$ curl -s https://get.helm.sh | bash
+$ mv ./helmc /usr/local/bin
+```
+
 ## Usage
 ```sh
+# login to gcloud
+$ gcloud auth login
+
+# set gcloud project var
+$ gcloud config set project yosh-land
+
+# setup terraform config -> view terraform config section
+
 # setup google cloud cluster
 $ terraform apply
 
 # load cluster credentials into kubernetes
-$ gcloud container clusters get-credentials test-cluster
+$ gcloud container clusters get-credentials cluster-eu-west \
+  --zone europe-west1-c \
+  --project yosh-land
 
 # build container from scratch
 $ ./script/build-container <gcloud_project_name>
@@ -51,12 +70,10 @@ Before infrastructure can be created we must get a config file under
 - [gcloud-ruby/authentication](http://googlecloudplatform.github.io/gcloud-ruby/docs/v0.1.1/AUTHENTICATION.md)
 
 ### Terraform configuration
-Create a terraform config file in
-[`infra/terraform.tfvars`](https://www.terraform.io/intro/getting-started/variables.html):
+Create a terraform config file in [./terraform/terraform.tfvars][tfconfig]
 ```hcl
-cluster_description = "yosh.land cluster"
-cluster_name = "yosh-land"
-gcloud_project = "<gcloud project name>"
+username = "<username>"
+password = "<password>"
 ```
 
 ## See Also
@@ -65,3 +82,5 @@ gcloud_project = "<gcloud project name>"
 
 ## License
 [MIT](https://tldrlegal.com/license/mit-license)
+
+[tfconfig]: https://www.terraform.io/intro/getting-started/variables.html
