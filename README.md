@@ -16,6 +16,15 @@ $ ./script/build-container <gcloud_project_name>
 $ ./script/deploy-container <gcloud_project_name>
 ```
 
+## Directory stucture
+```txt
+helm/         # helm charts
+kubernetes/   # kubernetes manifests
+terraform/    # terraform files
+secrets/      # kubernetes secrets
+README.md
+```
+
 ## Config
 ### Google cloud configuration
 Before infrastructure can be created we must get a config file under
