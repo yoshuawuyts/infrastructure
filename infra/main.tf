@@ -8,7 +8,7 @@ resource "google_container_cluster" "primary" {
   name = "${var.cluster_name}"
   description = "${var.cluster_description}"
   zone = "${var.gke_zone}"
-  initial_node_count = "1"
+  initial_node_count = "3"
 
   master_auth {
     username = "${var.username}"

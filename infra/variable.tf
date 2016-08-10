@@ -10,7 +10,7 @@ variable "gcloud_project" {
 
 variable "gcloud_credentials" {
   description = "Location of the gcloud credentials file"
-  default = "~/.gcloud/credentials.json"
+  default = "~/.config/gcloud/credentials.json"
 }
 
 variable "gcloud_region" {
