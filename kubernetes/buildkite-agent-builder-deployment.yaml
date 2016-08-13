@@ -19,10 +19,10 @@ spec:
           resources:
             limits:
               cpu: 400m
-              memory: 100Mi
+              memory: 200Mi
             requests:
               cpu: 100m
-              memory: 100Mi
+              memory: 200Mi
           env:
             # BUILDKITE AGENT ENV VARS
             - name: BUILDKITE_AGENT_TOKEN
