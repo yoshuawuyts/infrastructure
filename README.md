@@ -79,6 +79,7 @@ password = "<password>"
 ## See Also
 - https://github.com/ipfs/infrastructure
 - https://github.com/yoshuawuyts/there
+- https://github.com/bitnami/charts
 
 ## License
 [MIT](https://tldrlegal.com/license/mit-license)
