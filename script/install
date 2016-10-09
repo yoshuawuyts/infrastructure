@@ -1,0 +1,61 @@
+#!/bin/bash
+
+project="$(jq -r '.project' < manifest.json)"
+cluster="$(jq -r '.cluster' < manifest.json)"
+zone="$(jq -r '.zone' < manifest.json)"
+
+printf '[gcloud] switch to project %s\n' "$project"
+gcloud config set project "$project"
+
+printf '[gcloud] loading configuration into kubernetes\n'
+gcloud container clusters get-credentials "$cluster" \
+  --zone "$zone" \
+  --project "$project"
+
+pushd gcloud > /dev/null
+
+printf '[terraform] validating infrastructure status\n'
+tf_status="$(terraform show)"
+
+if [ "$tf_status" = "No state." ]; then
+  printf '[terraform] no running infrastructure found\n'
+  printf '[terraform] applying configuration\n'
+  terraform apply
+else
+  printf '[terraform] existing configuration found\n'
+  changes="$(terraform plan | head -5 | tail -1 | awk '{ print $1 $2; }')"
+  if [ "$changes" = "Nochanges." ]; then
+    printf '[terraform] no changes to apply\n'
+  else
+    printf '[terraform] changes detected\n'
+    terraform plan
+    read -rp "Do you want to apply the changes? <y/N>\n" prompt
+    if [ "$prompt" = "y" ]; then
+      printf '[terraform] applying changes\n'
+      terraform apply
+    else
+      printf '[terraform] changes rejected. Terminating script\n'
+      exit 0
+    fi
+  fi
+fi
+
+popd > /dev/null
+
+printf '[kubernetes] installing secrets\n'
+kubectl apply -R -f '../secrets/' || exit 1
+
+printf '[kubernetes] installing files\n'
+for f in ./*; do
+  if [ ! -d "$f" ]; then
+    continue
+  elif [ "$f" = "./secrets" ]; then
+    continue
+  elif [ "$f" = "./script" ]; then
+    continue
+  elif [ "$f" = "./gcloud" ]; then
+    continue
+  else
+    kubectl apply -R -f "$f"
+  fi
+done

@@ -3,45 +3,24 @@ Infrastructure files
 
 ## Installation
 ```sh
-$ brew install terraform
-$ brew install gcloud
+$ brew install jq terraform gcloud
 $ gcloud components install kubectl
-$ curl -s https://get.helm.sh | bash
-$ mv ./helmc /usr/local/bin
 ```
 
 ## Usage
-```sh
-# login to gcloud
-$ gcloud auth login
-
-# set gcloud project var
-$ gcloud config set project yosh-land
-
-# setup terraform config -> view terraform config section
-
-# setup google cloud cluster
-$ terraform apply
-
-# load cluster credentials into kubernetes
-$ gcloud container clusters get-credentials cluster-eu-west \
-  --zone europe-west1-c \
-  --project yosh-land
-
-# build container from scratch
-$ ./script/build-container <gcloud_project_name>
-
-# send container off to kube cluster & expose to public
-$ ./script/deploy-container <gcloud_project_name>
+```txt
+install     Install the infrastructure and k8 configuration
+uninstall   Uninstall the infrastructure
+start       Load configuration for this project and show status
 ```
 
-## Directory stucture
+## Project structure
 ```txt
-helm/         # helm charts
-kubernetes/   # kubernetes manifests
-terraform/    # terraform files
-secrets/      # kubernetes secrets
-README.md
+buildkite/   Buildkite templates
+gcloud/      Google cloud terraform files
+kubernetes/  Kubernetes templates and scripts
+script/      Shell scripts to interact with the cluster
+secrets/     Credential templates
 ```
 
 ## Config

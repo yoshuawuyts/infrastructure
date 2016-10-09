@@ -1,0 +1,17 @@
+#!/bin/bash
+
+pushd gcloud > /dev/null
+
+printf '[terraform] validating infrastructure status\n'
+tf_status="$(terraform show)"
+
+if [ "$tf_status" = "No state." ]; then
+  printf '[terraform] no running infrastructure found\n'
+  printf '[terraform] exiting\n'
+else
+  printf '[terraform] existing configuration found\n'
+  printf '[terraform] taking down infrastructure\n'
+  terraform destroy
+fi
+
+popd gcloud > /dev/null
