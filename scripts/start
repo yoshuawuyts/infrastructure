@@ -1,0 +1,48 @@
+#!/bin/bash
+
+project="$(jq -r '.project' < manifest.json)"
+cluster="$(jq -r '.cluster' < manifest.json)"
+zone="$(jq -r '.zone' < manifest.json)"
+
+pushd gcloud > /dev/null
+
+printf '[terraform] validating infrastructure status\n'
+tf_status="$(terraform show)"
+
+if [ "$tf_status" = "No state." ]; then
+  printf '[terraform] no running infrastructure found\n'
+  printf '[terraform] applying configuration\n'
+  terraform apply
+else
+  printf '[terraform] existing configuration found\n'
+  changes="$(terraform plan | head -5 | tail -1 | awk '{ print $1 $2; }')"
+  if [ "$changes" = "Nochanges." ]; then
+    printf '[terraform] no changes to apply\n'
+  else
+    printf '[terraform] changes detected\n'
+    terraform plan
+    read -rp "Do you want to apply the changes? <y/N>" prompt
+    if [ "$prompt" = "y" ]; then
+      printf '[terraform] applying changes\n'
+      terraform apply
+    else
+      printf '[terraform] aborting\n'
+      exit 1
+    fi
+  fi
+fi
+
+popd > /dev/null
+
+printf '[gcloud] loading configuration into kubernetes\n'
+gcloud container clusters get-credentials "$cluster" \
+  --zone "$zone" \
+  --project "$project"
+
+printf '[kubernetes] installing secrets\n'
+kubectl apply -R -f './secrets/'
+
+printf '[kubernetes] installing files\n'
+for f in ./agents/*; do
+  kubectl apply -R -f "$f"
+done
