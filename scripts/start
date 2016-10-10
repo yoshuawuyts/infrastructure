@@ -1,0 +1,112 @@
+#!/bin/bash
+
+dirname=$(dirname "$(readlink -f "$0")")
+project="$(jq -r '.project' < manifest.json)"
+cluster="$(jq -r '.cluster' < manifest.json)"
+zone="$(jq -r '.zone' < manifest.json)"
+alias kubectl="gcloud kubectl"
+
+validate_deps () {
+  gcloud -h >/dev/null
+  if [ $? -ne 0 ]; then
+    printf '[gcloud] Command not found. Terminating deploy\n'
+    exit 1
+  fi
+
+  kubectl -h >/dev/null
+  if [ $? -ne 0 ]; then
+    printf '[kubectl] Command not found. Attempting install\n'
+    gcloud components install kubectl
+    if [ $? -ne 0 ]; then
+      printf '[kubectl] Install failed. Terminating deploy\n'
+      exit 1
+    else
+      kubectl -h >/dev/null
+      if [ $? -ne 0 ]; then
+        printf '[kubectl] Command not found. Are you sourcing\n'
+        printf '[kubectl] the gcloud components dir correctly? \n'
+        printf '[kubectl] Terminating deploy\n'
+      fi
+    fi
+  fi
+}
+validate_deps
+
+printf '[gcloud] switch to project %s\n' "$project"
+gcloud config set project "$project"
+if [ $? -ne 0 ]; then
+  printf '[gcloud] Unexpected error. Terminating deploy\n'
+  exit 1
+fi
+
+pushd gcloud > /dev/null
+
+printf '[terraform] validating infrastructure status\n'
+tf_status="$(terraform show)"
+
+if [ "$tf_status" = "No state." ]; then
+  printf '[terraform] no running infrastructure found\n'
+  printf '[terraform] applying configuration\n'
+  terraform apply
+  if [ $? -ne 0 ]; then
+    printf '[terraform] Unexpected error. Terminating deploy\n'
+    exit 1
+  fi
+else
+  printf '[terraform] existing configuration found\n'
+  changes="$(terraform plan | head -5 | tail -1 | awk '{ print $1 $2; }')"
+  if [ "$changes" = "Nochanges." ]; then
+    printf '[terraform] no changes to apply\n'
+  else
+    printf '[terraform] changes detected\n'
+    terraform plan
+    read -rp "Do you want to apply the changes? <y/N>\n" prompt
+    if [ "$prompt" = "y" ]; then
+      printf '[terraform] applying changes\n'
+      terraform apply
+      if [ $? -ne 0 ]; then
+        printf '[terraform] Unexpected error. Terminating deploy\n'
+        exit 1
+      fi
+    else
+      printf '[terraform] changes rejected. Terminating script\n'
+      exit 0
+    fi
+  fi
+fi
+
+printf '[gcloud] loading configuration into kubernetes\n'
+gcloud container clusters get-credentials "$cluster" \
+  --zone "$zone" \
+  --project "$project"
+if [ $? -ne 0 ]; then
+  printf '[gcloud] Unexpected error. Terminating deploy\n'
+  exit 1
+fi
+
+popd > /dev/null
+
+kube_install_secrets () {
+  printf '[kubernetes] installing secrets\n'
+  secretspath="$dirname/../secrets/"
+  kubectl apply -R -f "$secretspath"
+  if [ $? -ne 0 ]; then
+    printf '[Kubernetes] Unexpected error. Terminating deploy\n'
+    exit 1
+  fi
+}
+
+kube_install_files () {
+  printf '[kubernetes] installing files\n'
+  for f in ./agents/*; do
+    kubectl apply -R -f "$f"
+    if [ $? -ne 0 ]; then
+      printf '[Kubernetes] Error on %s\n' "$f"
+      printf '[Kubernetes] Unexpected error. Terminating deploy\n'
+      exit 1
+    fi
+  done
+}
+
+kube_install_secrets
+kube_install_files
