@@ -56,24 +56,27 @@ else
   printf '[terraform] existing configuration found\n'
   changes="$(terraform plan | head -5 | tail -1 | awk '{ print $1 $2; }')"
   if [ "$changes" = "Nochanges." ]; then
-    printf '[terraform] no changes to apply\n'
+    printf '[terraform] No changes to apply\n'
   else
-    printf '[terraform] changes detected\n'
+    printf '[terraform] Changes detected\n'
     terraform plan
-    read -rp "Do you want to apply the changes? <y/N>\n" prompt
+    printf "[terraform] Do you want to apply these changes? <y/N>\n❯ "
+    read -r prompt
     if [ "$prompt" = "y" ]; then
-      printf '[terraform] applying changes\n'
+      printf '[terraform] Applying changes\n'
       terraform apply
       if [ $? -ne 0 ]; then
         printf '[terraform] Unexpected error. Terminating deploy\n'
         exit 1
       fi
     else
-      printf '[terraform] changes rejected. Terminating script\n'
+      printf '[terraform] Changes rejected. Terminating script\n'
       exit 0
     fi
   fi
 fi
+
+popd > /dev/null
 
 printf '[gcloud] loading configuration into kubernetes\n'
 gcloud container clusters get-credentials "$cluster" \
@@ -84,11 +87,9 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-popd > /dev/null
-
 kube_install_secrets () {
   printf '[kubernetes] installing secrets\n'
-  secretspath="$dirname/../secrets/"
+  secretspath="$dirname/../../secrets/"
   kubectl apply -R -f "$secretspath"
   if [ $? -ne 0 ]; then
     printf '[Kubernetes] Unexpected error. Terminating deploy\n'
@@ -99,7 +100,7 @@ kube_install_secrets () {
 kube_install_files () {
   printf '[kubernetes] installing files\n'
   for f in ./agents/*; do
-    kubectl apply -R -f "$f"
+    kubectl apply -f "$f"
     if [ $? -ne 0 ]; then
       printf '[Kubernetes] Error on %s\n' "$f"
       printf '[Kubernetes] Unexpected error. Terminating deploy\n'
